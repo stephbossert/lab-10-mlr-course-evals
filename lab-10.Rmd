@@ -1,7 +1,7 @@
 ---
 title: "Lab 10 - Grading the professor, Pt. 2"
-author: "Insert your name here"
-date: "Insert date here"
+author: "Steph Bossert"
+date: "13 April"
 output: github_document
 ---
 
@@ -11,17 +11,72 @@ output: github_document
 library(tidyverse) 
 library(tidymodels)
 library(openintro)
+?evals
+view(evals)
 ```
 
-### Exercise 1
-
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
-
-### Exercise 2
-
-...
-
-Add exercise headings as needed.
+### Exercise 1-2
+### m_bty = 3.88 +.067(bty_avg) 
+###Rsq = .04, Adj R sq = .03-- 40% of the variance in scores is explained in this model.
+```{r Exercises 1-2}
+###1 load data.
+m_bty = lm(score~bty_avg, data = evals) #Create the linear regression
+summary(m_bty)
+```
+### m_bty_gen = 3.88 +.07(bty_avg) + (.17)(gender) 
+###Exercise 3: Everything else held constant, men score .17 higher than females on their scores
+###Ex. 4: 59% of the variance in score is explained by gender and beauty rating...slightly disturbing results...
+###Ex 5: m_bty_gen = 3.88 +.07(bty_avg)
+###Ex 6: Men
+###Ex 7: See plot
+###Ex 8: The R square of m_bty_gen is almost 20% percentage points higher, meaning we are accounting for another 20% of variance in scores with the additional information 
+###Ex 9: The association/slope increases slightly, yes the addition of gender has changed the slope
+###Ex 10: m_bty_rank = 3.98 + .07(bty_avg) -.16(tenure track) -.13(tenure); all else held constant, tenure track professors score .16 points less than tenure professors. All else held constant a one point increase in beauty average is associated with a .07 increase in score. 
+```{r multiple regression}
+m_bty_gen = lm(score~bty_avg + gender, data = evals)
+summary(m_bty_gen)
+### m_bty_gen = 3.88 +.07(bty_avg) + (.17)(gender) 
+###Exercise 3: Everything else held constant, men score .17 higher than females on their scores
+###Ex. 4: 59% of the variance in score is explained by gender and beauty rating...slightly disturbing results...
+###Ex 5: m_bty_gen = 3.88 +.07(bty_avg)
+###Ex 6: Men
+####Ex 7: 
+ggplot(evals, aes(x=score, y=bty_avg, group=gender)) + 
+  geom_point(shape=18, color="blue")+
+  geom_smooth(method=lm, se=FALSE, linetype="solid",
+             color="orange") +
+  geom_jitter(aes(colour = gender))
+m_gen = lm(score~ gender, data = evals)
+summary(m_gen)
+###Ex 8: The R square of m_bty_gen is almost 20% percentage points higher, meaning we are accounting for another 20% of variance in scores with the additional information 
+###Ex 9: The association/slope increases slightly, yes the addition of gender has changed the slope
+###Ex 10: 
+m_bty_rank = lm(score~bty_avg + rank, data = evals)
+summary(m_bty_rank)
+### m_bty_rank = 3.98 + .07(bty_avg) -.16(tenure track) -.13(tenure); all else held constant, tenure track professors score 
+```
+###Ex 11. cls_credits- Class credits
+###Ex 12: m_cls = 4.15 + (.48)(cls_credits)
+###Ex 13: Do not include cls_did_eval because it would include redundant info in the model and not affect your variance explained in the model
+###Ex 14: m_full2= lm(score~ gender + language + age + cls_perc_eval + cls_did_eval + cls_students + cls_level + cls_profs + cls_credits + bty_avg, data=evals)
+###Ex 15: m_full9 = lm(score~ gender + ethnicity + bty_avg + rank, data=evals); score = 3.86 +.18(gender) + .10(notminority) .07(bty_avg) -.12(tenure track) - .15(tenure)
+###Ex 16: All else held constant, men score .18 points higher than women on average. All others held constant, a 1 point increase in beauty average is associated with an increase in .07 in their scores. 
+###Ex 17: Professor would be a non minority man, on the tenure track, who is attractive. 
+###Ex 18: I think these results could be generalized to most schools that share similar demographics to the University of Texas. 
+```{r Part 3}
+###Ex 11. cls_credits- Class credits
+###Ex 12
+m_cls = lm(score~cls_credits, data = evals)
+summary(m_cls)
+### m_cls = 4.15 + (.48)(cls_credits)
+###Ex 13: Do not include cls_did_eval because it would include redundant info in the model and not affect your variance explained in the model
+###Ex 14
+m_full2= lm(score~ gender + language + age + cls_perc_eval + cls_did_eval + cls_students + cls_level + cls_profs + cls_credits + bty_avg, data=evals)
+###Ex 15:
+m_full9 = lm(score~ gender + ethnicity + bty_avg + rank, data=evals)
+summary(m_full9)
+### score = 3.86 +.18(gender) + .10(notminority) .07(bty_avg) -.12(tenure track) - .15(tenure)
+###Ex 16: All else held constant, men score .18 points higher than women on average. All others held constant, a 1 point increase in beauty average is associated with an increase in .07 in their scores. 
+###Ex 17: Professor would be a non minority man, on the tenure track, who is attractive. 
+###Ex 18: I think these results could be generalized to most schools that share similar demographics to the University of Texas. 
+```
